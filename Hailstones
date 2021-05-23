@@ -1,0 +1,45 @@
+"""
+Hailstones:
++ Pick some positive integer and call it n.
++ If n is even, divide it by two.
++ If n is odd, multiply it by three and add one.
++ Continue this process until n is equal to one.
+
+I want to write a program that tests every positive integer between 1 and 100.
+It should give me:
++ number 
++ amount of steps to reach 1
+
+EXTRA show the results in a scatter plot, using matplotlib.
+"""
+
+import random
+import matplotlib.pyplot as plt
+
+FIRST_NUMBER_OF_TEST = 1
+LAST_NUMBER_OF_TEST = 100
+
+def main():
+    x = FIRST_NUMBER_OF_TEST
+    list_of_x = [] #keep track of x and steps in two lists
+    list_of_steps = []
+    for i in range(LAST_NUMBER_OF_TEST):
+        n = x #positive integer and call it n
+        steps = 0 #will keep track of amount of steps to reach 1
+        while n != 1 :
+            if n % 2 == 0: #x is an even number
+                n = n / 2
+                steps = steps + 1
+            else : #x is an uneven number
+                n = (n * 3) + 1
+                steps = steps + 1
+        print("for", x, "We need", steps, "to reach 1")
+        list_of_x.append(x) #add x to the list
+        list_of_steps.append(steps) #add result of steps for x in list
+        x = x + 1
+    plt.scatter(list_of_x, list_of_steps)
+    plt.ylabel('Amount of steps to reach 1')
+    plt.show()
+
+if __name__ == "__main__":
+    main()
