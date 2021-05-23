@@ -1,0 +1,13 @@
+MAXIMUM = 10000
+
+def main():
+    Fib_Sequence_0 = 0
+    Fib_Sequence_1 = 1
+    while Fib_Sequence_0 < MAXIMUM:
+        print(Fib_Sequence_0)
+        Fib_Sequence_2 = Fib_Sequence_0 + Fib_Sequence_1
+        Fib_Sequence_0 = Fib_Sequence_1
+        Fib_Sequence_1 = Fib_Sequence_2
+
+if __name__ == "__main__":
+    main()
