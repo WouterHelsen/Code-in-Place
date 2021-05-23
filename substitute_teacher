@@ -1,0 +1,112 @@
+NEVER = 2
+SOMETIMES = 15
+OFTEN = 30
+ALWAYS = 45
+FULL_YEAR = 175
+POSSIBLE_SCORES = ["never", "sometimes", "often", "always"]
+
+def main():
+    #intro voor Lien
+    teacher = intro()
+    happy = "n"
+    dict_names = {}
+    while happy == "n":
+        #collect the names and give them a value. Bonus: share individual chance they will be absent.
+        names(dict_names, teacher)
+        print_list_of_coworkers(dict_names, teacher)
+        print("Are you happy with your list of coworkers? (y/n)")
+        happy = input("    ")
+        print("")
+    # calculate the chance one (or more) of them will be absent tomorrow.
+    probability = calculate_absentcy(dict_names)
+    end_statement(probability, teacher)
+
+def intro():
+    print("What is your name?")
+    teacher = input("    ")
+    print("")
+    print("Hi", teacher,"!")
+    print("")
+    print("This program will help you plan your day as a substitute teacher.")
+    print("The algoritm in this program will calculate the possibility of an absent coworker for you.")
+    print("All we need from you to start is your coworkers names and how often they were absent in the past.")
+    print("The program will ask you to type each unique name individually and then give them a score on their past absents.")
+    print("")
+    print("To score your coworker we use the following scale:    (for reference: in Belgium there are", FULL_YEAR ,"schooldays a year)")
+    print("never : coworker is on average only", NEVER, "days absent a year.")
+    print("sometimes : coworker is on average", SOMETIMES, "days absent a year.")
+    print("often : coworker is on average", OFTEN,"days absent a year.")
+    print("always : coworker is",ALWAYS ,"days absent a year.")
+    print("")
+    return teacher
+
+def names(dict_names, teacher):
+    print("Type the unique name of your coworker (or press enter to finish the input): ")
+    name = input("    ")
+    while name != "":
+        print("How often would you say your coworker", name, "was abesent in the last year (never, sometimes, often or always):")
+        absent = input("    ")
+        if absent not in POSSIBLE_SCORES:
+            print("Sorry, invalid answer. Try again.")
+            absent = input("    ")
+        print("")
+        individual_chance_of_absence(name, absent, teacher)
+        print("")
+        dict_names[name] = absent
+        print("Type the unique name of your coworker (or press enter to finish the input): ")
+        name = input("    ")
+
+def individual_chance_of_absence(name, absent, teacher):
+    if absent == "never":
+        print("Wauw,", name, "must be a very dedicaded teacher!")
+        print("Because", name, "is almost always on the job you do not have to worry too much", teacher,"!")
+        chance_of_absence = NEVER / FULL_YEAR * 100
+        print("The chance of", name,"to be absent tomorrow is only", round(chance_of_absence, 2),"%!")
+    elif absent == "sometimes":
+        print("Good for", name, "!")
+        print("We all know that when you feel sick, it's better to stay at home for a few days.")
+        chance_of_absence = SOMETIMES / FULL_YEAR * 100
+        print("The chance of", name,"to be absent tomorrow is only", round(chance_of_absence, 2),"%!")
+    elif absent == "often":
+        print(name, "may be sick often, but that's ok. It's important to know your boundries. Health before work, right!")
+        print("That's exactly why we have", teacher, "to take over from", name, "!")
+        chance_of_absence = OFTEN / FULL_YEAR * 100
+        print("The chance of", name,"to be absent tomorrow is", round(chance_of_absence, 2),"%.")
+    elif absent == "always":
+        print("Aj, looks like there could be something else going on under the surface with",name,".")
+        print("Take good care of", name,"!")
+        chance_of_absence = ALWAYS / FULL_YEAR * 100
+        print("The chance of", name,"to be absent tomorrow is", round(chance_of_absence, 2),"%.")
+
+def print_list_of_coworkers(dict_names, teacher):
+    print("This is a short summery of all your amazing coworkers", teacher,": ")
+    for name in dict_names:
+        print(name, "is", dict_names[name], "absent.")
+    print("")
+
+def calculate_absentcy(dict_names):
+    probability = 0
+    for name in dict_names:
+        if dict_names[name] == "never":
+            probability += NEVER / FULL_YEAR
+        elif dict_names[name] == "sometimes":
+            probability += SOMETIMES / FULL_YEAR
+        elif dict_names[name] == "often":
+            probability += OFTEN / FULL_YEAR
+        elif dict_names[name] == "always":
+            probability += ALWAYS / FULL_YEAR
+    print("The chance that one (or more) of your coworkers will be absent tomorrow is", round(probability *100, 2), "%.")
+    return round(probability *100, 2)
+
+def end_statement(prob, teacher):
+    print("")
+    if prob <= 10:
+        print(prob,"% is very low!")
+        print("Big chance that tomorrow will be all yours! Enjoy your free day.")
+    elif prob <=49:
+        print("Exciting", teacher,"! Maybe they will call you and then you can show them all your amazing teaching skills.")
+    else :
+        print("With", prob,"% probablity you better prepare your lunch-box for tomorrow", teacher,". Good luck!")
+
+if __name__ == '__main__':
+	main()
