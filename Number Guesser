@@ -1,0 +1,24 @@
+def main():
+    number_low = 0
+    number_high = 100
+    number = (number_low + number_high) // 2
+    print("Is your number", number,"? ")
+    anwser = input("  ")
+    guesses = 0
+    while anwser != "correct":
+        if anwser == "lower":
+            number_high = number
+            number = (number_high + number_low) // 2
+            print("Is your number", number,"? ")
+            anwser = input("  ")
+            guesses += 1
+        if anwser == "higher":
+            number_low = number
+            number = (number_low + number_high) // 2
+            print("Is your number", number,"? ")
+            anwser = input("  ")
+            guesses += 1
+    print("I win! It took me", guesses ,"guesses")
+
+if __name__ == "__main__":
+    main()
