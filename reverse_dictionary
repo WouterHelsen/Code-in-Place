@@ -1,0 +1,26 @@
+def main():
+
+    dict = {
+        "a": 1,
+        "b": 2,
+        "c": 3,
+        "d": 3,
+        "e": 3,
+        "f": 3,
+        "g": 4
+    }
+
+    reversed_dict = {}
+
+    for key in dict:
+        value = dict[key]
+        if value not in reversed_dict:
+            reversed_dict[value] = [key]
+        else :
+            reversed_dict[value].append(key)
+
+    print(dict)
+    print(reversed_dict)
+
+if __name__ == '__main__':
+    main()
