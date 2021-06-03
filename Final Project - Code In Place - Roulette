@@ -1,0 +1,204 @@
+"""
+ROULETTE :
+In my final project I want to create a program that allows a person to play multiple games of the popular casino game ROULETTE.
+The goal is to use a little bit of every subject we learned during Code In Place :
++ A random generator to simulate the roulette wheel.
++ Lists for the outcome of the roulette wheel.
++ A dictionary keeps tracks of the different bets (keys) and their betting size (value).
++ Control flow & plenty of functions
++ Images : I added an image of the Roulette table for people who have no experience with the game.
++ Data Science : I visualize the player's game history on a plot with matplotlib.
+"""
+
+import random
+from simpleimage import SimpleImage
+import matplotlib.pyplot as plt
+
+def main():
+    your_chips = introduction()
+    games = 0
+    track_chips = [your_chips]
+    track_games = [0]
+    while your_chips != 0:
+
+        your_chips = play_game(your_chips)
+        games += 1
+        track_games.append(games)
+        track_chips.append(your_chips)
+
+        print("Would you like to play an other game at this table? \n(Answer with yes or no.)")
+        yes_or_no = input("\t")
+        if yes_or_no == 'no' and your_chips != 0 :
+            print("You can exchange your",your_chips,"chips at the bar. Thank you for playing at our casino.\n")
+            your_chips = 0
+        elif yes_or_no == 'no' and your_chips == 0 :
+            print("We hope we will see you soon back at our casino\n")
+        else :
+            print("Amazing! Then let's start the game.\n")
+            print("Would you like to buy more chips for your next game?\nPlease give the amount or press enter if you do not want to buy more chips.")
+            more_chips = input("\t")
+            if more_chips != "":
+                your_chips += int(more_chips)
+    print("You played", games,"games at this table.\nWould you like us to visualize your game history?\nAnswer with yes or no:")
+    yes_or_no_again = input("\t")
+    if yes_or_no_again == 'yes' :
+        plt.plot(track_games, track_chips)
+        plt.xticks(track_games)
+        plt.xlabel("Games")
+        plt.ylabel("Chips")
+        plt.show()
+
+
+
+
+def introduction():
+    print("\nWelcome at the roulette table! \n\nToday we will play an easy version of roulette.\n")
+    print("How many chips would you like to buy at this table?\nPlease enter a number.")
+    your_chips = int(input("\t"))
+    print("Thank you! Let's start the game.\n")
+    return your_chips
+
+def play_game(your_chips):
+    dict_of_bets, your_chips = place_your_bets(your_chips)
+    ball = spin_the_wheel()
+    your_chips = outcome(dict_of_bets, your_chips, ball)
+    return your_chips
+
+def place_your_bets(your_chips):
+    print("\nTime to place your bets! \n")
+
+    print("Would you like to see an image with the layout of a roulette table as a quick reminder before you place your bets?\nAnswer with yes or no:")
+    yes_or_no = input("\t")
+    if yes_or_no == 'yes':
+        image = SimpleImage("RouletteLayout.png")
+        image.show()
+
+    print("\nWe will start from the outside.\n")
+    print("On the outside you can bet on either red or black and even or odd.\n")
+    print("To place your outside bet specify first the name of your bet (example: red), we will then ask you to specify the amount.\nIf you do not want to bet, simply return enter.\n")
+
+    dict_of_bets = {}
+    print("Do you want to bet red or black ?")
+    red_or_black = input("\t")
+    if red_or_black != "":
+        dict_of_bets,your_chips = make_bet(dict_of_bets,your_chips, red_or_black)
+
+    print("Do you want to bet odd or even ?")
+    odd_or_even = input("\t")
+    if odd_or_even != "":
+        dict_of_bets,your_chips = make_bet(dict_of_bets,your_chips, odd_or_even)
+
+    print(
+        "\nNow we have placed our bets on the outside, it's time for you to take your positions on the field of numbers on the inside.\n"
+        "For this game we will only accept straight bets on single numbers,\n\n"
+        "As before we ask you to first specify the number you want to bet on (example: 13), then we will ask you to specify the amount.\n"
+        "If you do not want to bet, simply return enter.\n")
+
+    print("Do you want to bet on a single number ?\nPlease enter one number at a time:")
+    single_number = input("\t")
+    while single_number != "":
+        dict_of_bets,your_chips = make_bet(dict_of_bets,your_chips, single_number)
+        print("Do you want to bet on any other single numbers ? Please enter one number.\nIf you want to finish betting simply return enter.")
+        single_number = input("\t")
+
+    return dict_of_bets, your_chips
+
+def make_bet(dict_of_bets,your_chips, choice):
+    print("How much do you want to bet on", choice, "?")
+    bet_size = int(input("\t"))
+    while True:
+        if bet_size <= your_chips :
+            dict_of_bets[choice] = bet_size
+            your_chips -= bet_size
+            return dict_of_bets,your_chips
+        else :
+            print("Sorry, you only have", your_chips,"chips for this game.\nPlease make a smaller bet:")
+            bet_size = int(input("\t"))
+
+def spin_the_wheel():
+    the_wheel = dict_wheel()
+    ball = the_wheel[random.randint(0,37)]
+    return(ball)
+
+def dict_wheel():
+
+    red = [32, 19, 21, 25, 34, 27, 36, 30, 23, 5, 16, 1, 14, 9, 18, 7, 12, 3]
+    black = [15, 4, 2, 17, 6, 13, 11, 8, 10, 24, 33, 20, 31, 22, 29, 28, 35, 26]
+    dict = {}
+    list = []
+    for i in range(37):
+        list_of_number = []
+        if i == 0:
+            list_of_number.append('0')
+        elif i == 37:
+            list_of_number.append('00')
+        else:
+            list_of_number.append(str(i))
+
+        if i % 2 == 0 and i_is_not_0_or_00(i):
+            list_of_number.append('even')
+        elif i % 2 != 0 and i_is_not_0_or_00(i):
+            list_of_number.append('odd')
+
+        if i in red:
+            list_of_number.append('red')
+        elif i in black:
+            list_of_number.append('black')
+
+        list.append(list_of_number)
+        dict[i] = list_of_number
+    return dict
+
+def i_is_not_0_or_00(i):
+    if i != 0 and i != 37:
+        return True
+
+def outcome(dict_of_bets, your_chips, ball):
+    spend_money = 0
+    good_guess = {}
+    print("No more bets !\n"
+          "The dealer spins the ball...\n"
+          "The ball lands on..", ball[2], "... number", ball[0], "!!\n")
+    # good_guess is a dictionary with all the correct bets the player made during this game and the amount the player bet on each bet
+    for key in dict_of_bets:
+        spend_money += dict_of_bets[key]
+        if key in ball:
+            good_guess[key] = dict_of_bets[key]
+
+    # Now we pay out the good results in winnings
+    winnings = 0
+    list_outside_bets = ["red", "black", "even", "odd"]
+    list_numbers_inside = ['00', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15',
+                           '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
+                           '31', '32', '33', '34', '35', '36']
+
+    for key in good_guess:
+        if key in list_outside_bets:
+            print("Good guess, you doubled your money because you bet", good_guess[key], "dollars on", key, "!\n")
+            winnings += 2 * good_guess[key]
+        elif str(key) in list_numbers_inside:
+            print("Lucky you! You correctly bet", good_guess[key], "dollars on number", key, "!")
+            print("The pay out ratio is 35 to 1.\n")
+            winnings += 36 * good_guess[key]
+
+    # How much did player win/loose in total ?
+    if winnings == spend_money:
+        print(
+            "In total you neither made a profit nor a loss during this game.\nSometimes you win something, sometimes you lose something, but only when you are really lucky you also get something!\n")
+    elif winnings > spend_money:
+        profit = winnings - spend_money
+        print("Congratulations! With", spend_money, "dollars on the table, you made", profit, "dollars of profit during this game!\n")
+    else:
+        loss = -(winnings - spend_money)
+        print("I am sorry, during this game you lost", loss, "dollars in total.\n")
+
+    your_chips += winnings
+    if your_chips > 0 :
+        print("You still have", your_chips,"dollars left at this table. Maybe you will have better luck in the next game?")
+    else :
+        print("You lost all your chips at this table. Buy some more chips and maybe luck will be on your side in the next game?")
+
+    return your_chips
+
+if __name__ == '__main__':
+    main()
